@@ -5,9 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>pokedex</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./styles/standards.css">
+    <link rel="shortcut icon" href="./assets/icons/pokedex_logo.png" type="image/x-icon">
+    <script src="./templates/templates.js"></script>
 </head>
-<body>
-    
+<body onload="onLoadFunc()">
+    <header class="main-header">
+         
+    </header>
+    <main data-id="content"
+          class="main-content"  >
+        <div id="pokemonContainer"></div>
+
+        <button data-id="load-more-button"
+                id="load-more-button">Load More</button>
+    </main>
+    <footer class="main-footer">
+
+    </footer>
     <script src="./script.js"></script>
 </body>
 </html>
+
