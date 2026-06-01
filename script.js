@@ -29,6 +29,23 @@ async function loadPkmn() {
   }
   currentStart += amount;
   document.getElementById("pokemonContainer").innerHTML += content;
+  addCardClickEvents();
+}
+
+function addCardClickEvents() {
+  let cards = document.querySelectorAll(".pkmn-card");
+  for (let i = 0; i < cards.length; i++) {
+    cards[i].addEventListener("click", function () {
+      let pokemonId = this.dataset.id;
+        openPkmnDialog(pokemonId);
+    });
+}}
+
+async function openPkmnDialog(id) {
+    let pkmnData = await getPkmn(id);
+    document.getElementById("pkmnCardDialog").innerHTML = 
+    getPokemonDialogTemplate(pkmnData);
+    document.getElementById("pkmnCardDialog").showModal();
 }
 
 document.getElementById("load-more-button").addEventListener("click", loadPkmn);
