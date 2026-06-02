@@ -9,13 +9,14 @@ function getPokemonTemplate(pokemonData) {
 }
 
 function getPokemonDialogTemplate(pokemonData) {
-  return `
+  return `<div class="dialog-wrapper">
     <button onclick="document.getElementById('pkmnCardDialog').close()">X</button>
-    <h2>${pokemonData.name}</h2>
     <span>#${pokemonData.id}</span>
+    <h2>${pokemonData.name}</h2>
     <img src="${pokemonData.sprites.front_default}">
     <p>Type: ${pokemonData.types[0].type.name}</p>
     <p>Height: ${pokemonData.height}</p>
     <p>Weight: ${pokemonData.weight}</p>
+    <div>
   `;
 }
