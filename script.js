@@ -29,6 +29,8 @@ function getMainType(pokemonData) {
 }
 
 async function loadPkmn() {
+  showLoadingScreen();
+
   let content = "";
   for (let i = currentStart; i < currentStart + amount; i++) {
     let pokemonData = await getPkmn(i);
@@ -36,8 +38,11 @@ async function loadPkmn() {
     let mainType = getMainType(pokemonData);
     content += getPokemonTemplate(pokemonData, mainType);
   }
+
   currentStart += amount;
   document.getElementById("pokemonContainer").innerHTML += content;
+
+  hideLoadingScreen();
 }
 
 function addCardClickEvents() {
@@ -61,10 +66,20 @@ function addSearchEvent() {
     });
 }
 
-function filterPkmn(searchValue){
-  let filteredPkmn = loadedPkmn.filter(function(pokemon){
-    return pokemon.name.includes(searchValue.toLowerCase());
+function filterPkmn(searchValue) {
+  searchValue = searchValue.toLowerCase().trim();
+  if (searchValue.length < 3) {
+    renderPokemonCards(loadedPkmn);
+    return;
+  }
+  let filteredPkmn = loadedPkmn.filter(function (pokemon) {
+    return pokemon.name.includes(searchValue);
   });
+  if (filteredPkmn.length === 0) {
+    document.getElementById("pokemonContainer").innerHTML =
+      getNoResultsTemplate();
+    return;
+  }
   renderPokemonCards(filteredPkmn);
 }
 
@@ -77,7 +92,7 @@ function renderPokemonCards(pokemonArray) {
   }
 
   document.getElementById("pokemonContainer").innerHTML = content;
-}  
+}
 
 function renderPokemonTypes(pokemonData) {
   let content = "";
@@ -120,19 +135,37 @@ function closePkmnDialog() {
 }
 
 function addDialogClickEvents() {
+  let prevButton = document.querySelector('[data-id="prev-button"]');
+
+  if (currentPkmnId === 1) {
+    prevButton.disabled = true;
+  }
+
   document
     .querySelector('[data-id="close-dialog-button"]')
     .addEventListener("click", closePkmnDialog);
-  document
-    .querySelector('[data-id="prev-button"]')
-    .addEventListener("click", function () {
+
+  prevButton.addEventListener("click", function () {
+    if (currentPkmnId > 1) {
       openPkmnDialog(currentPkmnId - 1);
-    });
+    }
+  });
+
   document
     .querySelector('[data-id="next-button"]')
     .addEventListener("click", function () {
       openPkmnDialog(currentPkmnId + 1);
     });
+}
+
+function showLoadingScreen() {
+  document
+    .querySelector('[data-id="loading-screen"]')
+    .classList.remove("d-none");
+}
+
+function hideLoadingScreen() {
+  document.querySelector('[data-id="loading-screen"]').classList.add("d-none");
 }
 
 document.getElementById("load-more-button").addEventListener("click", loadPkmn);

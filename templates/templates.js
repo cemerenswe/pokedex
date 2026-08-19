@@ -2,7 +2,10 @@ function getPokemonTemplate(pokemonData, mainType) {
   return `
     <div class="pkmn-card ${mainType}" data-id="${pokemonData.id}">
       <span>#${pokemonData.id}</span>
-      <img src="${pokemonData.sprites.front_default}">
+      <img
+      src="${pokemonData.sprites.front_default}"
+      alt="${pokemonData.name}"
+      >
       <h2>${pokemonData.name}</h2>
       <p>${pokemonData.types[0].type.name}</p>
     </div>`;
@@ -61,3 +64,8 @@ function getStatTemplate(statName, statValue) {
     </div>`;
 }
 
+function getNoResultsTemplate() {
+  return `
+    <p>Kein Pokémon gefunden</p>
+  `;
+}
