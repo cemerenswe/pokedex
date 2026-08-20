@@ -22,22 +22,25 @@
       <div class="header-right">
         <input
           type="text"
-          placeholder="Suche eingeben..."
+          placeholder="Search Pokémon..."
           data-id="search-input"
         />
+        <button data-id="search-button" aria-label="Search Pokémon">
+          Search
+        </button>
       </div>
     </header>
     <main data-id="content" class="main-content">
-      <div id="pokemonContainer"></div>
-        <div data-id="loading-screen" class="loading-screen d-none">
-          <div class="spinner"></div>
-        </div>
-      <button data-id="load-more-button" id="load-more-button">
+      <ul id="pokemonContainer"></ul>
+      <div data-id="loading-screen" class="loading-screen d-none">
+        <div class="spinner"></div>
+      </div>
+      <button data-id="load-more-button" id="load-more-button" aria-label="Load more Pokémon">
         Load More
       </button>
     </main>
     <footer class="main-footer"></footer>
-    <dialog id="pkmnCardDialog" data-id="dialog"></dialog>
+    <dialog id="pkmnCardDialog" data-id="dialog" aria-label="Pokémon details"></dialog>
     <script src="./script.js"></script>
   </body>
 </html>

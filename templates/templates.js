@@ -1,14 +1,16 @@
 function getPokemonTemplate(pokemonData, mainType) {
   return `
-    <div class="pkmn-card ${mainType}" data-id="${pokemonData.id}">
+  <li>
+    <button class="pkmn-card ${mainType}" data-id="card" data-pokemon-id="${pokemonData.id}" aria-label="Open details for ${pokemonData.name}">
       <span>#${pokemonData.id}</span>
       <img
       src="${pokemonData.sprites.front_default}"
       alt="${pokemonData.name}"
-      >
+      data-id="card-image">
       <h2>${pokemonData.name}</h2>
       <p>${pokemonData.types[0].type.name}</p>
-    </div>`;
+    </button>
+  </li>`;
 }
 
 function getPokemonDialogTemplate(pokemonData, typesContent, statsContent) {
@@ -16,7 +18,8 @@ function getPokemonDialogTemplate(pokemonData, typesContent, statsContent) {
     <div class="dialog-wrapper" data-id="overlay-pokemon-name">
       <button 
         class="dialog-close-button" 
-        data-id="close-dialog-button">X</button>
+        data-id="close-dialog-button"
+        aria-label="Close Pokémon details">X</button>
       <span>#${pokemonData.id}</span>
       <h2>${pokemonData.name}</h2>
       <img 
@@ -40,8 +43,8 @@ function getPokemonDialogTemplate(pokemonData, typesContent, statsContent) {
         ${statsContent}
       </div>
       <div class="dialog-navigation">
-        <button data-id="prev-button">←</button>
-        <button data-id="next-button">→</button>
+        <button data-id="prev-button" aria-label="Previous Pokémon">←</button>
+        <button data-id="next-button" aria-label="Next Pokémon">→</button>
       </div>
     </div>`;
 }
@@ -66,6 +69,5 @@ function getStatTemplate(statName, statValue) {
 
 function getNoResultsTemplate() {
   return `
-    <p>Kein Pokémon gefunden</p>
-  `;
+    <p data-id="not-found">No Pokémon found</p>`;
 }

@@ -30,6 +30,7 @@ body {
   padding: 40px;
   width: 100%;
   max-width: 1200px;
+  list-style: none;
 }
 
 .pkmn-card {
@@ -42,6 +43,7 @@ body {
   align-items: center;
   color: white;
   cursor: pointer;
+  width: 100%;
 }
 
 .pkmn-card h2 {
@@ -70,6 +72,11 @@ body {
 
 #load-more-button:hover {
   background-color: #162e93;
+}
+
+#load-more-button:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 .main-footer {

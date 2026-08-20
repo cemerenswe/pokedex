@@ -11,6 +11,7 @@ let loadedPkmn = [];
 let currentPkmnId = null;
 let currentStart = 1;
 let amount = 20;
+let isLoading = false;
 
 async function getPkmn(id) {
   if (allPkmn[id]) {
@@ -29,20 +30,31 @@ function getMainType(pokemonData) {
 }
 
 async function loadPkmn() {
+  if (isLoading === true) {
+    return;
+  }
+  isLoading = true;
+  document.getElementById("load-more-button").disabled = true;
   showLoadingScreen();
 
   let content = "";
-  for (let i = currentStart; i < currentStart + amount; i++) {
-    let pokemonData = await getPkmn(i);
-    loadedPkmn.push(pokemonData);
-    let mainType = getMainType(pokemonData);
-    content += getPokemonTemplate(pokemonData, mainType);
+  try {
+    for (let i = currentStart; i < currentStart + amount; i++) {
+      let pokemonData = await getPkmn(i);
+      loadedPkmn.push(pokemonData);
+      let mainType = getMainType(pokemonData);
+      content += getPokemonTemplate(pokemonData, mainType);
+    }
+    currentStart += amount;
+  } catch (error) {
+    console.error(error);
+  } finally {
+    hideLoadingScreen();
+    isLoading = false;
+    document.getElementById("load-more-button").disabled = false;
   }
 
-  currentStart += amount;
   document.getElementById("pokemonContainer").innerHTML += content;
-
-  hideLoadingScreen();
 }
 
 function addCardClickEvents() {
@@ -52,7 +64,7 @@ function addCardClickEvents() {
       let card = event.target.closest(".pkmn-card");
 
       if (card) {
-        let pokemonId = card.dataset.id;
+        let pokemonId = card.dataset.pokemonId;
         openPkmnDialog(pokemonId);
       }
     });
