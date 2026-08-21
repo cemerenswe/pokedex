@@ -36,7 +36,7 @@ async function loadPkmn() {
   startLoading();
   try {
     let content = await loadPokemonBatch();
-    document.getElementById("pokemonContainer").innerHTML += content;
+    renderLoadedPokemon(content);
     currentStart += amount;
   } catch (error) {
     console.error(error);
@@ -67,6 +67,17 @@ async function loadPokemonBatch() {
     content += getPokemonTemplate(pokemonData, mainType, typesContent);
   }
   return content;
+}
+
+function renderLoadedPokemon(content) {
+  let searchValue = document
+    .querySelector('[data-id="search-input"]')
+    .value.trim();
+  if (searchValue.length >= 3) {
+    filterPkmn(searchValue);
+    return;
+  }
+  document.getElementById("pokemonContainer").innerHTML += content;
 }
 
 function addCardClickEvents() {
