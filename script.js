@@ -59,13 +59,15 @@ function finishLoading() {
 
 async function loadPokemonBatch() {
   let content = "";
+  let pokemonBatch = [];
   for (let i = currentStart; i < currentStart + amount; i++) {
     let pokemonData = await getPkmn(i);
-    loadedPkmn.push(pokemonData);
+    pokemonBatch.push(pokemonData);
     let mainType = getMainType(pokemonData);
     let typesContent = renderPokemonTypes(pokemonData);
     content += getPokemonTemplate(pokemonData, mainType, typesContent);
   }
+  loadedPkmn.push(...pokemonBatch);
   return content;
 }
 
