@@ -2,6 +2,8 @@ function onLoadFunc() {
   loadPkmn();
   addCardClickEvents();
   addSearchEvent();
+  addSearchInputEvent();
+  addDialogOutsideClickEvent();
 }
 
 const BASE_URL = "https://pokeapi.co/api/v2/pokemon/";
@@ -30,31 +32,41 @@ function getMainType(pokemonData) {
 }
 
 async function loadPkmn() {
-  if (isLoading === true) {
-    return;
-  }
-  isLoading = true;
-  document.getElementById("load-more-button").disabled = true;
-  showLoadingScreen();
-
-  let content = "";
+  if (isLoading) return;
+  startLoading();
   try {
-    for (let i = currentStart; i < currentStart + amount; i++) {
-      let pokemonData = await getPkmn(i);
-      loadedPkmn.push(pokemonData);
-      let mainType = getMainType(pokemonData);
-      content += getPokemonTemplate(pokemonData, mainType);
-    }
+    let content = await loadPokemonBatch();
+    document.getElementById("pokemonContainer").innerHTML += content;
     currentStart += amount;
   } catch (error) {
     console.error(error);
   } finally {
-    hideLoadingScreen();
-    isLoading = false;
-    document.getElementById("load-more-button").disabled = false;
+    finishLoading();
   }
+}
 
-  document.getElementById("pokemonContainer").innerHTML += content;
+function startLoading() {
+  isLoading = true;
+  document.getElementById("load-more-button").disabled = true;
+  showLoadingScreen();
+}
+
+function finishLoading() {
+  hideLoadingScreen();
+  isLoading = false;
+  document.getElementById("load-more-button").disabled = false;
+}
+
+async function loadPokemonBatch() {
+  let content = "";
+  for (let i = currentStart; i < currentStart + amount; i++) {
+    let pokemonData = await getPkmn(i);
+    loadedPkmn.push(pokemonData);
+    let mainType = getMainType(pokemonData);
+    let typesContent = renderPokemonTypes(pokemonData);
+    content += getPokemonTemplate(pokemonData, mainType, typesContent);
+  }
+  return content;
 }
 
 function addCardClickEvents() {
@@ -72,9 +84,25 @@ function addCardClickEvents() {
 
 function addSearchEvent() {
   document
+    .querySelector('[data-id="search-button"]')
+    .addEventListener("click", function () {
+      let searchValue = document.querySelector(
+        '[data-id="search-input"]',
+      ).value;
+      filterPkmn(searchValue);
+    });
+}
+
+function addSearchInputEvent() {
+  document
     .querySelector('[data-id="search-input"]')
     .addEventListener("input", function (event) {
-      filterPkmn(event.target.value);
+      let searchValue = event.target.value.trim();
+      if (searchValue.length === 0) {
+        renderPokemonCards(loadedPkmn);
+      }
+      let searchButton = document.querySelector('[data-id="search-button"]');
+      searchButton.disabled = searchValue.length < 3;
     });
 }
 
@@ -87,6 +115,10 @@ function filterPkmn(searchValue) {
   let filteredPkmn = loadedPkmn.filter(function (pokemon) {
     return pokemon.name.includes(searchValue);
   });
+  renderSearchResults(filteredPkmn);
+}
+
+function renderSearchResults(filteredPkmn) {
   if (filteredPkmn.length === 0) {
     document.getElementById("pokemonContainer").innerHTML =
       getNoResultsTemplate();
@@ -100,7 +132,8 @@ function renderPokemonCards(pokemonArray) {
   for (let i = 0; i < pokemonArray.length; i++) {
     let pokemonData = pokemonArray[i];
     let mainType = getMainType(pokemonData);
-    content += getPokemonTemplate(pokemonData, mainType);
+    let typesContent = renderPokemonTypes(pokemonData);
+    content += getPokemonTemplate(pokemonData, mainType, typesContent);
   }
 
   document.getElementById("pokemonContainer").innerHTML = content;
@@ -128,6 +161,14 @@ function renderPokemonStats(pokemonData) {
 async function openPkmnDialog(id) {
   currentPkmnId = Number(id);
   let pkmnData = await getPkmn(id);
+  let dialog = renderPkmnDialog(pkmnData);
+  if (!dialog.open) {
+    dialog.showModal();
+  }
+  addDialogClickEvents();
+}
+
+function renderPkmnDialog(pkmnData) {
   let typesContent = renderPokemonTypes(pkmnData);
   let statsContent = renderPokemonStats(pkmnData);
   let dialog = document.getElementById("pkmnCardDialog");
@@ -136,10 +177,7 @@ async function openPkmnDialog(id) {
     typesContent,
     statsContent,
   );
-  if (!dialog.open) {
-    dialog.showModal();
-  }
-  addDialogClickEvents();
+  return dialog;
 }
 
 function closePkmnDialog() {
@@ -147,22 +185,30 @@ function closePkmnDialog() {
 }
 
 function addDialogClickEvents() {
-  let prevButton = document.querySelector('[data-id="prev-button"]');
+  addCloseDialogEvent();
+  addPrevDialogEvent();
+  addNextDialogEvent();
+}
 
-  if (currentPkmnId === 1) {
-    prevButton.disabled = true;
-  }
-
+function addCloseDialogEvent() {
   document
     .querySelector('[data-id="close-dialog-button"]')
     .addEventListener("click", closePkmnDialog);
+}
 
+function addPrevDialogEvent() {
+  let prevButton = document.querySelector('[data-id="prev-button"]');
+  if (currentPkmnId === 1) {
+    prevButton.disabled = true;
+  }
   prevButton.addEventListener("click", function () {
     if (currentPkmnId > 1) {
       openPkmnDialog(currentPkmnId - 1);
     }
   });
+}
 
+function addNextDialogEvent() {
   document
     .querySelector('[data-id="next-button"]')
     .addEventListener("click", function () {
@@ -178,6 +224,15 @@ function showLoadingScreen() {
 
 function hideLoadingScreen() {
   document.querySelector('[data-id="loading-screen"]').classList.add("d-none");
+}
+
+function addDialogOutsideClickEvent() {
+  let dialog = document.getElementById("pkmnCardDialog");
+  dialog.addEventListener("click", function (event) {
+    if (event.target === dialog) {
+      closePkmnDialog();
+    }
+  });
 }
 
 document.getElementById("load-more-button").addEventListener("click", loadPkmn);

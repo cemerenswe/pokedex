@@ -1,51 +1,85 @@
-function getPokemonTemplate(pokemonData, mainType) {
+function getPokemonTemplate(pokemonData, mainType, typesContent) {
   return `
-  <li>
-    <button class="pkmn-card ${mainType}" data-id="card" data-pokemon-id="${pokemonData.id}" aria-label="Open details for ${pokemonData.name}">
-      <span>#${pokemonData.id}</span>
-      <img
+    <li>
+      <button
+        class="pkmn-card ${mainType}"
+        data-id="card"
+        data-pokemon-id="${pokemonData.id}"
+        aria-label="Open details for ${pokemonData.name}">
+        ${getPokemonCardContentTemplate(pokemonData, typesContent)}
+      </button>
+    </li>`;
+}
+
+function getPokemonCardContentTemplate(pokemonData, typesContent) {
+  return `
+    <span>#${pokemonData.id}</span>
+    ${getPokemonCardImageTemplate(pokemonData)}
+    <span class="pkmn-card-title">${pokemonData.name}</span>
+    <span class="type-container">
+      ${typesContent}
+    </span>`;
+}
+
+function getPokemonCardImageTemplate(pokemonData) {
+  return `
+    <img
       src="${pokemonData.sprites.front_default}"
       alt="${pokemonData.name}"
-      data-id="card-image">
-      <h2>${pokemonData.name}</h2>
-      <p>${pokemonData.types[0].type.name}</p>
-    </button>
-  </li>`;
+      data-id="card-image">`;
 }
 
 function getPokemonDialogTemplate(pokemonData, typesContent, statsContent) {
   return `
     <div class="dialog-wrapper" data-id="overlay-pokemon-name">
-      <button 
-        class="dialog-close-button" 
-        data-id="close-dialog-button"
-        aria-label="Close Pokémon details">X</button>
-      <span>#${pokemonData.id}</span>
-      <h2>${pokemonData.name}</h2>
-      <img 
-        src="${pokemonData.sprites.other["official-artwork"].front_default}" 
-        alt="${pokemonData.name}"
-        data-id="dialog-image">
-      <div class="type-container">
-        ${typesContent}
-      </div>
-      <div class="pokemon-info-container">
-        <div class="pokemon-info-box">
-          <span>Height</span>
-          <b>${pokemonData.height}</b>
-        </div>
-        <div class="pokemon-info-box">
-            <span>Weight</span>
-          <b>${pokemonData.weight}</b>
-        </div>
-      </div>
+      ${getDialogHeaderTemplate(pokemonData)}
+      <div class="type-container">${typesContent}</div>
+      ${getPokemonInfoTemplate(pokemonData)}
       <div class="stats-container">
         ${statsContent}
       </div>
-      <div class="dialog-navigation">
-        <button data-id="prev-button" aria-label="Previous Pokémon">←</button>
-        <button data-id="next-button" aria-label="Next Pokémon">→</button>
+      ${getDialogNavigationTemplate()}
+    </div>`;
+}
+
+function getDialogHeaderTemplate(pokemonData) {
+  return `
+    ${getCloseDialogButtonTemplate()}
+    <span>#${pokemonData.id}</span>
+    <h2>${pokemonData.name}</h2>
+    <img
+      src="${pokemonData.sprites.other["official-artwork"].front_default}"
+      alt="${pokemonData.name}"
+      data-id="dialog-image">`;
+}
+
+function getCloseDialogButtonTemplate() {
+  return `
+    <button
+      class="dialog-close-button"
+      data-id="close-dialog-button"
+      aria-label="Close Pokémon details">X</button>`;
+}
+
+function getPokemonInfoTemplate(pokemonData) {
+  return `
+    <div class="pokemon-info-container">
+      <div class="pokemon-info-box">
+        <span>Height</span>
+        <b>${pokemonData.height}</b>
       </div>
+      <div class="pokemon-info-box">
+        <span>Weight</span>
+        <b>${pokemonData.weight}</b>
+      </div>
+    </div>`;
+}
+
+function getDialogNavigationTemplate() {
+  return `
+    <div class="dialog-navigation">
+      <button data-id="prev-button" aria-label="Previous Pokémon">←</button>
+      <button data-id="next-button" aria-label="Next Pokémon">→</button>
     </div>`;
 }
 
@@ -69,5 +103,7 @@ function getStatTemplate(statName, statValue) {
 
 function getNoResultsTemplate() {
   return `
-    <p data-id="not-found">No Pokémon found</p>`;
+    <li>
+      <p data-id="not-found">No Pokémon found</p>
+    </li>`;
 }

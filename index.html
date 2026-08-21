@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pokedex</title>
+    <title>Pokédex</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="./styles/standards.css" />
     <link
@@ -16,16 +16,17 @@
   <body onload="onLoadFunc()">
     <header class="main-header">
       <div class="header-left">
-        <img src="./assets/icons/pokedex_logo.png" alt="Pokedex logo" />
+        <img src="./assets/icons/pokedex_logo.png" alt="Pokédex logo" />
       </div>
-      <h2>Pokedex</h2>
+      <h1>Pokédex</h1>
       <div class="header-right">
         <input
           type="text"
           placeholder="Search Pokémon..."
           data-id="search-input"
+          aria-label="Search Pokémon by name"
         />
-        <button data-id="search-button" aria-label="Search Pokémon">
+        <button data-id="search-button" aria-label="Search Pokémon" disabled>
           Search
         </button>
       </div>
@@ -35,12 +36,20 @@
       <div data-id="loading-screen" class="loading-screen d-none">
         <div class="spinner"></div>
       </div>
-      <button data-id="load-more-button" id="load-more-button" aria-label="Load more Pokémon">
+      <button
+        data-id="load-more-button"
+        id="load-more-button"
+        aria-label="Load more Pokémon"
+      >
         Load More
       </button>
     </main>
     <footer class="main-footer"></footer>
-    <dialog id="pkmnCardDialog" data-id="dialog" aria-label="Pokémon details"></dialog>
+    <dialog
+      id="pkmnCardDialog"
+      data-id="dialog"
+      aria-label="Pokémon details"
+    ></dialog>
     <script src="./script.js"></script>
   </body>
 </html>

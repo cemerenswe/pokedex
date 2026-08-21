@@ -16,6 +16,10 @@ body {
   background-color: #080616;
 }
 
+body:has(#pkmnCardDialog[open]) {
+  overflow: hidden;
+}
+
 .main-content {
   flex: 1;
   display: flex;
@@ -29,7 +33,7 @@ body {
   gap: 20px;
   padding: 40px;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1440px;
   list-style: none;
 }
 
@@ -46,8 +50,18 @@ body {
   width: 100%;
 }
 
-.pkmn-card h2 {
+.pkmn-card-title {
   text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.type-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .pkmn-card img {
@@ -107,7 +121,7 @@ body {
   width: auto;
 }
 
-.pkmn-card h2,
+.pkmn-card-title,
 .dialog-wrapper h2 {
   text-transform: capitalize;
 }
@@ -161,7 +175,7 @@ body {
   width: auto;
 }
 
-.main-header h2 {
+.main-header h1 {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -326,6 +340,10 @@ dialog::backdrop {
   cursor: not-allowed;
 }
 
+button:disabled:hover {
+  cursor: default;
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -333,5 +351,35 @@ dialog::backdrop {
 
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 750px) {
+  .main-header {
+    height: auto;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .main-header h1 {
+    position: static;
+    transform: none;
+    margin: 0;
+  }
+
+  .header-right {
+    display: flex;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .header-right input {
+    flex: 1;
+    min-width: 0;
+  }
+
+  #pokemonContainer {
+    padding: 16px;
   }
 }
